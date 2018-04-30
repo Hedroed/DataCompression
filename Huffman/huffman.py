@@ -24,14 +24,14 @@ proba = [
 
 ###  la classe Node
 
-class Arbre:
+class Tree:
     def __init__(self, root=None):
         self.root = root
 
     def fromArray(self):
         pass
 
-    def __repr__(self):
+    def __str__(self):
         if self.root == None:
             return "Empty tree"
         else:
@@ -57,9 +57,10 @@ class Node :
 
     def print(self, prefix, isTail=False):
         ret = ""
-        ret += prefix + ( "└── " if isTail else "├── " ) + ("Leaf " if self.isLeaf() else "Node " ) + str(self) + "\n"
-        ret += self.left.print(prefix + ("    " if isTail else "│   "), false)
-        ret += self.right.print(prefix + ("    " if isTail else "│   "), true)
+        ret += prefix + ( "└── " if isTail else "├── " ) + ("Leaf '%s'" % self.letter if self.isLeaf() else "Node" ) + "\n"
+        if not self.isLeaf():
+            ret += self.left.print(prefix + ("    " if isTail else "│   "), False)
+            ret += self.right.print(prefix + ("    " if isTail else "│   "), True)
         return ret
 
 
@@ -77,12 +78,21 @@ if __name__ == '__main__':
 
     ###  Ex.1  construction de l'arbre d'Huffamn utilisant la structure de "tas binaire"
     def huffman_tree(frequencies):
-        heapify(F)
-        for _ in range(len(frequencies)):
-            print(heappop(F))
+        heapify(frequencies)
+        while len(frequencies) > 1:
+            node1 = heappop(frequencies)
+            node2 = heappop(frequencies)
 
-        # à compléter
-        pass
+            parent = (node1[0] + node2[0], Node(None, left=node1[1], right=node2[1]))
+
+            heappush(frequencies, parent)
+
+        if len(frequencies) == 1:
+            t = Tree(frequencies[0][1])
+            print(t)
+
+        else:
+            raise Exception()
 
     huffman_tree(F)
 
