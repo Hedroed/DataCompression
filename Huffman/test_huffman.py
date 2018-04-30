@@ -28,4 +28,10 @@ def test_encode():
 
 if __name__ == '__main__':
     # print("Code length average : %s" % average())
-    test_encode()
+    # test_encode()
+
+    F = frequencies()
+    tree = huffman_tree(F)
+    code = huffman_code(tree)
+
+    decode(tree, "examples/horla.txt.huf")

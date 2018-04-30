@@ -137,11 +137,26 @@ def encode(code, in_file, out_file=None):
 ###  Ex.4  décodage d'un fichier compresse
 
 def decode(tree, compressed_file):
-    pass
-    # à compléter
 
-    decode = decodage(H,'leHorlaEncoded.txt')
-    print(decode)
+    with open(compressed_file, 'rb') as f:
+        data = f.read()
+    
+    content = ""
+    current_node = tree.root
+    # Convert data to bits
+    bits = ''.join(bin(c)[2:] for c in data)
+    
+    for b in bits:
+        if b == "0":
+            current_node = current_node.left
+        else:
+            current_node = current_node.right
+        if current_node.isLeaf():
+            content += current_node.letter
+            current_node = tree.root
+    
+    print(content)
+
 
 if __name__ == '__main__':  
 
