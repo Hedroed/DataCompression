@@ -7,6 +7,7 @@
 ####
 
 from heapq import *
+import unidecode
 
 ###  distribution de proba sur les letrres
 
@@ -117,6 +118,8 @@ def encode(code, in_file, out_file=None):
 
     with open(in_file) as f:
         content = f.read()
+        content = content.lower()
+        content = unidecode.unidecode(content)
 
     # Convert file to bits using code
     bits = ""
