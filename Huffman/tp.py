@@ -1,10 +1,7 @@
-#!/usr/bin/python3
-# coding: utf-8
-
-####
-# Huffman algorithm
-# By Mathieu LUX and Nathan RYDIN
-####
+#####################################################
+######  Introduction à la cryptographie  	###
+#####   Codes de Huffman             		###
+####################################################
 
 from heapq import *
 
@@ -23,11 +20,14 @@ proba = [
     0.0506, 0.0100, 0.0000, 0.0031, 0.0021, 0.0008  ]
 
 def frequences() :
-    table = [
-        (proba[i], caracteres[i])
-        for i in range(len(caracteres))
-    ]
+    table = {}
+    n = len(caracteres)
+    for i in range(n) :
+        table[caracteres[i]] = proba[i]
     return table
+
+F = frequences()
+print(F)
 
 ###  la classe Node
 
@@ -41,8 +41,8 @@ class Arbre:
     def __repr__(self):
         if self.root == None:
             return "Empty tree"
-        else:
-            return "Tree:\n" + self.root.print("", True)
+        else
+            return "Tree:\n" + repr(self.root)
 
 class Node :
     def __init__(self, letter, left=None, right=None):
@@ -66,45 +66,42 @@ class Node :
         ret = ""
         ret += prefix + ( "└── " if isTail else "├── " ) + ("Leaf " if self.isLeaf() else "Node " ) + str(self) + "\n"
         ret += self.left.print(prefix + ("    " if isTail else "│   "), false)
-        ret += self.right.print(prefix + ("    " if isTail else "│   "), true)
+        ret += self.right.print(prefix + ("    " if isTail else "│   ", true)
         return ret
 
 
-if __name__ == '__main__':  
 
-    F = frequences()
-    print(F)
+###  Ex.1  construction de l'arbre d'Huffamn utilisant la structure de "tas binaire"
+def arbre_huffman(frequences) :
+    # à compléter
 
-    ###  Ex.1  construction de l'arbre d'Huffamn utilisant la structure de "tas binaire"
-    def arbre_huffman(frequences) :
-        # à compléter
-        pass
+###  Ex.2  construction du code d'Huffamn
 
-    ###  Ex.2  construction du code d'Huffamn
+def parcours(arbre,prefixe,code) :    
+    # à compléter
 
-    def parcours(arbre,prefixe,code):
-        # à compléter
-        pass
-
-    def code_huffman(arbre) :
-        # on remplit le dictionnaire du code d'Huffman en parcourant l'arbre
-        code = {}
-        parcours(arbre,'',code)
-        return code
-
-    ###  Ex.3  encodage d'un texte contenu dans un fichier
-
-    def encodage(dico,fichier) :
-        # à compléter
-
-        encode = encodage(dico,'leHorla.txt')
-        print(encode)
+def code_huffman(arbre) :
+    # on remplit le dictionnaire du code d'Huffman en parcourant l'arbre
+    code = {}
+    parcours(arbre,'',code)
+    return code
 
 
-    ###  Ex.4  décodage d'un fichier compresse
 
-    def decodage(arbre,fichierCompresse) :
-        # à compléter
 
-        decode = decodage(H,'leHorlaEncoded.txt')
-        print(decode)
+###  Ex.3  encodage d'un texte contenu dans un fichier
+
+def encodage(dico,fichier) :
+    # à compléter
+
+encode = encodage(dico,'leHorla.txt')
+print(encode)
+
+
+###  Ex.4  décodage d'un fichier compresse
+
+def decodage(arbre,fichierCompresse) :
+    # à compléter
+
+decode = decodage(H,'leHorlaEncoded.txt')
+print(decode)
