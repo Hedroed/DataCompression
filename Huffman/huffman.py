@@ -22,13 +22,6 @@ proba = [
     0.0623, 0.0459, 0.0256, 0.0081, 0.0555, 0.0697, 0.0572,
     0.0506, 0.0100, 0.0000, 0.0031, 0.0021, 0.0008  ]
 
-def frequences() :
-    table = [
-        (proba[i], caracteres[i])
-        for i in range(len(caracteres))
-    ]
-    return table
-
 ###  la classe Node
 
 class Arbre:
@@ -70,15 +63,28 @@ class Node :
         return ret
 
 
+def frequences() :
+    table = [
+        (proba[i], Node(caracteres[i]))
+        for i in range(len(caracteres))
+    ]
+    return table
+
+
 if __name__ == '__main__':  
 
     F = frequences()
-    print(F)
 
     ###  Ex.1  construction de l'arbre d'Huffamn utilisant la structure de "tas binaire"
     def arbre_huffman(frequences) :
+        heapify(F)
+        for _ in range(len(frequences)):
+            print(heappop(F))
+
         # à compléter
         pass
+
+    arbre_huffman(F)
 
     ###  Ex.2  construction du code d'Huffamn
 
