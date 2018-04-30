@@ -144,7 +144,7 @@ def decode(tree, compressed_file):
     content = ""
     current_node = tree.root
     # Convert data to bits
-    bits = ''.join(bin(c)[2:] for c in data)
+    bits = ''.join(bin(c)[2:].rjust(8, '0') for c in data)
     
     for b in bits:
         if b == "0":

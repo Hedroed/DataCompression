@@ -32,6 +32,6 @@ if __name__ == '__main__':
 
     F = frequencies()
     tree = huffman_tree(F)
-    code = huffman_code(tree)
+    # code = huffman_code(tree)
 
     decode(tree, "examples/horla.txt.huf")
