@@ -23,7 +23,7 @@ def test_encode():
     tree = huffman_tree(F)
     code = huffman_code(tree)
 
-    encode(code, "examples/horla.txt")
+    encode(code, "samples/horla.txt")
 
 
 if __name__ == '__main__':
@@ -34,4 +34,4 @@ if __name__ == '__main__':
     tree = huffman_tree(F)
     code = huffman_code(tree)
 
-    decode(tree, "examples/horla.txt.huf")
+    decode(tree, "samples/horla.txt.huf")
