@@ -101,7 +101,7 @@ def parcours(node, prefixe, code):
     parcours(node.right, prefixe + '1', code)
 
 
-def huffman_code(tree) :
+def huffman_code(tree):
     # on remplit le dictionnaire du code d'Huffman en parcourant l'arbre
     code = {}
     parcours(tree.root,'',code)
@@ -110,16 +110,33 @@ def huffman_code(tree) :
 
 ###  Ex.3  encodage d'un texte contenu dans un fichier
 
-def encode(dico,fichier) :
-    # à compléter
+def encode(code, in_file, out_file=None):
 
-    encode = encodage(dico,'leHorla.txt')
-    print(encode)
+    if out_file == None:
+        out_file = in_file + ".huf"
+
+    with open(in_file) as f:
+        content = f.read()
+
+    # Convert file to bits using code
+    bits = ""
+    for c in content:
+        if c in code:
+            bits += code[c]
+        else:
+            bits += code[' ']
+
+    # Transform bit string to bytes
+    bytestring = bytes([int(bits[i:i+8], 2) for i in range(0, len(bits), 8)])
+
+    # Write bytes to the output file
+    with open(out_file, 'wb') as o:
+        o.write(bytestring)
 
 
 ###  Ex.4  décodage d'un fichier compresse
 
-def decode(arbre,fichierCompresse) :
+def decode(tree, compressed_file):
     # à compléter
 
     decode = decodage(H,'leHorlaEncoded.txt')
