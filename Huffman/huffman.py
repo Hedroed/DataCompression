@@ -110,23 +110,31 @@ def huffman_code(tree) :
 
 ###  Ex.3  encodage d'un texte contenu dans un fichier
 
-def encode(dico,fichier) :
+def encode(tree, data) :
     # à compléter
-
-    encode = encodage(dico,'leHorla.txt')
-    print(encode)
+    pass
 
 
 ###  Ex.4  décodage d'un fichier compresse
 
-def decode(arbre,fichierCompresse) :
+def decode(tree, data) :
     # à compléter
+    pass
 
-    decode = decodage(H,'leHorlaEncoded.txt')
-    print(decode)
 
 if __name__ == '__main__':  
 
     F = frequencies()
     tree = huffman_tree(F)
     print(huffman_code(tree))
+
+    with open('leHorla.txt', r) as f:
+        encoded = encodage(tree, f.read())
+
+    print("Encoded", encoded)
+    
+    with open('leHorlaEncoded.txt', 'w') as f:
+        f.write(encoded)
+
+    decoded = decodage(tree, encoded)
+    print("Decoded", decoded)
