@@ -50,14 +50,18 @@ class Node :
     #     return self == None
 
     def __str__(self):
-        return "'%s'" % self.letter
+        if self.isLeaf():
+            return "\033[92mLeaf\033[0m '%s'" % self.letter
+        else:
+            return "\033[93mNode\033[0m"
+
 
     def __repr__(self):
         return '<'+ str(self.letter)+'.'+str(self.left)+'.'+str(self.right)+'>'
 
     def print(self, prefix, isTail=False):
         ret = ""
-        ret += prefix + ( "└── " if isTail else "├── " ) + ("Leaf '%s'" % self.letter if self.isLeaf() else "Node" ) + "\n"
+        ret += prefix + ( "└── " if isTail else "├── " ) + str(self) + "\n"
         if not self.isLeaf():
             ret += self.left.print(prefix + ("    " if isTail else "│   "), False)
             ret += self.right.print(prefix + ("    " if isTail else "│   "), True)
