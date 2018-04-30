@@ -28,9 +28,6 @@ class Tree:
     def __init__(self, root=None):
         self.root = root
 
-    def fromArray(self):
-        pass
-
     def __str__(self):
         if self.root == None:
             return "Empty tree"
@@ -45,9 +42,6 @@ class Node :
 
     def isLeaf(self):
         return self.left == None and self.right == None
-
-    # def isEmpty(self):
-    #     return self == None
 
     def __str__(self):
         if self.isLeaf():
@@ -76,12 +70,9 @@ def frequencies() :
     return table
 
 
-if __name__ == '__main__':  
+###  Ex.1  construction de l'arbre d'Huffamn utilisant la structure de "tas binaire"
 
-    F = frequencies()
-
-    ###  Ex.1  construction de l'arbre d'Huffamn utilisant la structure de "tas binaire"
-    def huffman_tree(frequencies):
+def huffman_tree(frequencies):
         heapify(frequencies)
         while len(frequencies) > 1:
             node1 = heappop(frequencies)
@@ -93,38 +84,49 @@ if __name__ == '__main__':
 
         if len(frequencies) == 1:
             t = Tree(frequencies[0][1])
-            print(t)
-
+            return t
         else:
             raise Exception()
 
-    huffman_tree(F)
 
-    ###  Ex.2  construction du code d'Huffamn
+###  Ex.2  construction du code d'Huffamn
 
-    def parcours(arbre,prefixe,code):
-        # à compléter
-        pass
+def parcours(node, prefixe, code):
 
-    def code_huffman(arbre) :
-        # on remplit le dictionnaire du code d'Huffman en parcourant l'arbre
-        code = {}
-        parcours(arbre,'',code)
-        return code
-
-    ###  Ex.3  encodage d'un texte contenu dans un fichier
-
-    def encodage(dico,fichier) :
-        # à compléter
-
-        encode = encodage(dico,'leHorla.txt')
-        print(encode)
+    if node.isLeaf():
+        code[node.letter] = prefixe
+        return
+    
+    parcours(node.left, prefixe + '0', code)
+    parcours(node.right, prefixe + '1', code)
 
 
-    ###  Ex.4  décodage d'un fichier compresse
+def huffman_code(tree) :
+    # on remplit le dictionnaire du code d'Huffman en parcourant l'arbre
+    code = {}
+    parcours(tree.root,'',code)
+    return code
 
-    def decodage(arbre,fichierCompresse) :
-        # à compléter
 
-        decode = decodage(H,'leHorlaEncoded.txt')
-        print(decode)
+###  Ex.3  encodage d'un texte contenu dans un fichier
+
+def encode(dico,fichier) :
+    # à compléter
+
+    encode = encodage(dico,'leHorla.txt')
+    print(encode)
+
+
+###  Ex.4  décodage d'un fichier compresse
+
+def decode(arbre,fichierCompresse) :
+    # à compléter
+
+    decode = decodage(H,'leHorlaEncoded.txt')
+    print(decode)
+
+if __name__ == '__main__':  
+
+    F = frequencies()
+    tree = huffman_tree(F)
+    print(huffman_code(tree))
