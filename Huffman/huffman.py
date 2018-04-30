@@ -137,6 +137,7 @@ def encode(code, in_file, out_file=None):
 ###  Ex.4  décodage d'un fichier compresse
 
 def decode(tree, compressed_file):
+    pass
     # à compléter
 
     decode = decodage(H,'leHorlaEncoded.txt')
