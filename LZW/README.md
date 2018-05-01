@@ -1,6 +1,6 @@
 # LZW
 
-> Lempel–Ziv–Welch (LZW) is a universal lossless data compression algorithm. The algorithm is simple to implement and has the potential for very high throughput in hardware implementations. It is the algorithm of the widely used Unix file compression utility compress and is used in the GIF image format.
+> Lempel–Ziv–Welch (LZW) is a universal lossless data compression algorithm. The algorithm is simple to implement and has the potential for very high throughput in hardware implementations. It is the algorithm of the widely used Unix file compression utility [compress](https://en.wikipedia.org/wiki/Compress) and is used in the GIF image format.
 >
 > [Wikipedia - Lempel–Ziv–Welch](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Welch)
 
