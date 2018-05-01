@@ -182,10 +182,3 @@ def decompress(tree, data):
             current_node = tree.root
     
     return content
-
-
-if __name__ == '__main__':  
-
-    F = frequencies()
-    tree = huffman_tree(F)
-    code = huffman_code(tree)
