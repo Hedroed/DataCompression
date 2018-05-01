@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # coding: utf-8
 
 ####
@@ -50,7 +50,6 @@ class Node :
         else:
             return "\033[93mNode\033[0m"
 
-
     def __repr__(self):
         return '<'+ str(self.letter)+'.'+str(self.left)+'.'+str(self.right)+'>'
 
@@ -61,6 +60,12 @@ class Node :
             ret += self.left.print(prefix + ("    " if isTail else "│   "), False)
             ret += self.right.print(prefix + ("    " if isTail else "│   "), True)
         return ret
+
+    def __lt__(self, other):
+        '''
+            Handle the case where 2 values are equals for heapify and heappush
+        '''
+        return True
 
 
 def frequencies() :
@@ -111,14 +116,14 @@ def huffman_code(tree):
 
 ###  Ex.3  encodage d'un texte contenu dans un fichier
 
-def compress_file(code, in_file, out_file=None):
+def compress_file(code, in_file, out_file=None, sanitize=True):
 
     # Get content from input file
     with open(in_file) as f:
         content = f.read()
 
     # Compress file content
-    bytestring = compress(code, content)
+    bytestring = compress(code, content, sanitize)
 
     # Write bytes to the output file
     if out_file != None:
@@ -128,11 +133,12 @@ def compress_file(code, in_file, out_file=None):
         return bytestring
 
 
-def compress(code, content):
+def compress(code, content, sanitize=True):
 
-    # Remove uppercase letters and accents
-    content = content.lower()
-    content = unidecode.unidecode(content)
+    if sanitize:
+        # Remove uppercase letters and accents
+        content = content.lower()
+        content = unidecode.unidecode(content)
 
     # Convert content to bits using code
     bits = ""
