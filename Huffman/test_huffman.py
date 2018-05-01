@@ -17,21 +17,23 @@ def average():
     return avg/len(code) * 100
 
 
-def test_encode():
+def test_compress():
 
     F = frequencies()
     tree = huffman_tree(F)
     code = huffman_code(tree)
 
-    encode(code, "samples/horla.txt")
+    compressed = compress_file(code, "samples/horla.txt")
+    print(compressed)
 
 
 if __name__ == '__main__':
     # print("Code length average : %s" % average())
-    test_encode()
+    test_compress()
 
     F = frequencies()
     tree = huffman_tree(F)
     code = huffman_code(tree)
 
-    decode(tree, "samples/horla.txt.huf")
+    content = decompress_file(tree, "samples/horla.txt.huf")
+    print(content)

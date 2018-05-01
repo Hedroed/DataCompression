@@ -111,17 +111,30 @@ def huffman_code(tree):
 
 ###  Ex.3  encodage d'un texte contenu dans un fichier
 
-def encode(code, in_file, out_file=None):
+def compress_file(code, in_file, out_file=None):
 
-    if out_file == None:
-        out_file = in_file + ".huf"
-
+    # Get content from input file
     with open(in_file) as f:
         content = f.read()
-        content = content.lower()
-        content = unidecode.unidecode(content)
 
-    # Convert file to bits using code
+    # Compress file content
+    bytestring = compress(code, content)
+
+    # Write bytes to the output file
+    if out_file != None:
+        with open(out_file, 'wb') as o:
+            o.write(bytestring)
+    else:
+        return bytestring
+
+
+def compress(code, content):
+
+    # Remove uppercase letters and accents
+    content = content.lower()
+    content = unidecode.unidecode(content)
+
+    # Convert content to bits using code
     bits = ""
     for c in content:
         if c in code:
@@ -132,17 +145,27 @@ def encode(code, in_file, out_file=None):
     # Transform bit string to bytes
     bytestring = bytes([int(bits[i:i+8], 2) for i in range(0, len(bits), 8)])
 
-    # Write bytes to the output file
-    with open(out_file, 'wb') as o:
-        o.write(bytestring)
+    return bytestring
 
 
 ###  Ex.4  décodage d'un fichier compresse
 
-def decode(tree, compressed_file):
+def decompress_file(tree, compressed_file, out_file=None):
 
     with open(compressed_file, 'rb') as f:
         data = f.read()
+    
+    content = decompress(tree, data)
+
+    # Write content to the output file
+    if out_file != None:
+        with open(out_file, 'w') as o:
+            o.write(content)
+    else:
+        return content
+
+    
+def decompress(tree, data):
     
     content = ""
     current_node = tree.root
@@ -158,7 +181,7 @@ def decode(tree, compressed_file):
             content += current_node.letter
             current_node = tree.root
     
-    print(content)
+    return content
 
 
 if __name__ == '__main__':  
