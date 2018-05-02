@@ -6,24 +6,12 @@
 # By Mathieu LUX and Nathan RYDIN
 ####
 
+from collections import Counter
 from heapq import *
 import unidecode
 
-###  distribution de proba sur les letrres
 
-caracteres = [
-    ' ', 'a', 'b', 'c', 'd', 'e', 'f',
-    'g', 'h', 'i', 'j', 'k', 'l', 'm',
-    'n', 'o', 'p', 'q', 'r', 's', 't',
-    'u', 'v', 'w', 'x', 'y', 'z' ]
-
-proba = [
-    0.1835, 0.0640, 0.0064, 0.0259, 0.0260, 0.1486, 0.0078,
-    0.0083, 0.0061, 0.0591, 0.0023, 0.0001, 0.0465, 0.0245,
-    0.0623, 0.0459, 0.0256, 0.0081, 0.0555, 0.0697, 0.0572,
-    0.0506, 0.0100, 0.0000, 0.0031, 0.0021, 0.0008  ]
-
-###  la classe Node
+# --- Model ---
 
 class Tree:
     def __init__(self, root=None):
@@ -34,6 +22,7 @@ class Tree:
             return "Empty tree"
         else:
             return "Tree:\n" + self.root.print("", True)
+
 
 class Node :
     def __init__(self, letter, left=None, right=None):
@@ -68,17 +57,40 @@ class Node :
         return True
 
 
-def frequencies() :
+def get_french_frequencies() :
+    caracteres = [
+        ' ', 'a', 'b', 'c', 'd', 'e', 'f',
+        'g', 'h', 'i', 'j', 'k', 'l', 'm',
+        'n', 'o', 'p', 'q', 'r', 's', 't',
+        'u', 'v', 'w', 'x', 'y', 'z'
+    ]
+    proba = [
+        0.1835, 0.0640, 0.0064, 0.0259, 0.0260, 0.1486, 0.0078,
+        0.0083, 0.0061, 0.0591, 0.0023, 0.0001, 0.0465, 0.0245,
+        0.0623, 0.0459, 0.0256, 0.0081, 0.0555, 0.0697, 0.0572,
+        0.0506, 0.0100, 0.0000, 0.0031, 0.0021, 0.0008
+    ]
     table = [
-        (proba[i], Node(caracteres[i]))
-        for i in range(len(caracteres))
+            (proba[i], Node(caracteres[i]))
+            for i in range(len(caracteres))
     ]
     return table
 
 
+# --- Core ---
+
 ###  Ex.1  construction de l'arbre d'Huffamn utilisant la structure de "tas binaire"
 
-def huffman_tree(frequencies):
+def generate_tree(content):
+    counts = Counter(content)
+    freq = [
+        (counts[c], Node(c))
+        for c in counts
+    ]
+    return tree_from_frequencies(freq)
+
+
+def tree_from_frequencies(frequencies):
         heapify(frequencies)
         while len(frequencies) > 1:
             node1 = heappop(frequencies)
@@ -98,7 +110,6 @@ def huffman_tree(frequencies):
 ###  Ex.2  construction du code d'Huffamn
 
 def parcours(node, prefixe, code):
-
     if node.isLeaf():
         code[node.letter] = prefixe
         return
@@ -116,29 +127,27 @@ def huffman_code(tree):
 
 ###  Ex.3  encodage d'un texte contenu dans un fichier
 
-def compress_file(code, in_file, out_file=None, sanitize=True):
-
+def compress_file(in_file, out_file=None, tree=None):
     # Get content from input file
     with open(in_file) as f:
         content = f.read()
-
+    
     # Compress file content
-    bytestring = compress(code, content, sanitize)
+    bytestring, tree = compress(content, tree)
 
     # Write bytes to the output file
     if out_file != None:
         with open(out_file, 'wb') as o:
             o.write(bytestring)
-    else:
-        return bytestring
+
+    return bytestring, tree
 
 
-def compress(code, content, sanitize=True):
-
-    if sanitize:
-        # Remove uppercase letters and accents
-        content = content.lower()
-        content = unidecode.unidecode(content)
+def compress(content, tree=None):
+    if tree is None:
+        # Generate code from input file
+        tree = generate_tree(content)
+        code = huffman_code(tree)
 
     # Convert content to bits using code
     bits = ""
@@ -151,13 +160,12 @@ def compress(code, content, sanitize=True):
     # Transform bit string to bytes
     bytestring = bytes([int(bits[i:i+8], 2) for i in range(0, len(bits), 8)])
 
-    return bytestring
+    return bytestring, tree
 
 
 ###  Ex.4  décodage d'un fichier compresse
 
 def decompress_file(tree, compressed_file, out_file=None):
-
     with open(compressed_file, 'rb') as f:
         data = f.read()
     
@@ -172,7 +180,6 @@ def decompress_file(tree, compressed_file, out_file=None):
 
     
 def decompress(tree, data):
-    
     content = ""
     current_node = tree.root
     # Convert data to bits
