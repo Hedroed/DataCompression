@@ -48,6 +48,20 @@ def test_horla_text():
         f.write(compressed)
 
 
+def test_multiple_char():
+    data = 'T      ML'.encode()
+
+    compressed = compress(data)
+    d = decompress(compressed)
+
+    print(d)
+
+    print("Compression from %d to %d bytes" % (len(data), len(compressed)))
+    print('Compression ratio %.2f%%' % ((1 - len(compressed) / len(data)) * 100))
+    print('Equal ?', d == data)
+    assert d == data
+
+
 def test_french_text():
     with open('samples/french_text.txt', 'rb') as f:
         data = f.read()
