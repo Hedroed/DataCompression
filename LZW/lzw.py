@@ -31,9 +31,11 @@ def compress(text: bytes):
 
         # print(w)
         if len(w) == 1:
-            ret += "{:b}".format(int.from_bytes(w, 'big')).rjust(length+1, '0')
+            r = "{:b}".format(int.from_bytes(w, 'big')).rjust(length+1, '0')
         else:
-            ret += "{:b}".format(groups.index(w) + 256).rjust(length+1, '0')
+            r = "{:b}".format(groups.index(w) + 256).rjust(length+1, '0')
+
+        ret += r
 
         if len(groups) >= offset:
             print('Size up')
@@ -45,9 +47,8 @@ def compress(text: bytes):
 
         w = current
 
-    ret += '0' * (len(ret) % 8)  # padding with 0
-
-    print("bitcode len", len(ret), len(ret) % 8)
+    # print("padding len", 8 - len(ret) % 8)
+    ret += '0' * (8 - len(ret) % 8)  # padding with 0
 
     bitcode = [int(ret[i:i+8], 2) for i in range(0, len(ret), 8)]
     return bytes(bitcode)
@@ -70,10 +71,14 @@ def decompress(text: bytes):
 
     bitLen = len(bitcode)
     i = length
-    while i+length < bitLen:
+    while i+length <= bitLen:
+
+        # print(bitcode[i:i+length])
 
         v = int(bitcode[i:i+length], 2)  # current code
         i += length
+
+        print(v, len(groups))
 
         r = b''
         if v < 256:
@@ -81,7 +86,6 @@ def decompress(text: bytes):
         else:
             r = groups[v - 256]
 
-        # print(v,"=>",r)
         ret += r
         groups.append(w + r[0:1])
 
