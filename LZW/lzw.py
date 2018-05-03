@@ -21,12 +21,12 @@ def compress(text: bytes):
     i = 1
     while i <= textLen:
         current = text[i:i+1]
-        i+=1
+        i += 1
 
         while i <= textLen and (w+current) in groups:
             w += current
             current = text[i:i+1]
-            i+=1
+            i += 1
         # print(current)
 
         # print(w)
@@ -49,7 +49,7 @@ def compress(text: bytes):
 
     print("bitcode len", len(ret), len(ret) % 8)
 
-    bitcode = [int(ret[i:i+8], 2) for i in range(0,len(ret),8)]
+    bitcode = [int(ret[i:i+8], 2) for i in range(0, len(ret), 8)]
     return bytes(bitcode)
 
 
@@ -91,31 +91,4 @@ def decompress(text: bytes):
             length += 1
 
         w = r
-    
     return ret
-
-
-
-if __name__ == '__main__':
-    # data = 'TOBEORNOTTOBEORTOBEORNOT'.encode()
-
-    with open('samples/lorem.txt', 'rb') as f:
-        data = f.read()
-
-    compressed = compress(data)
-
-    print(len(data))
-    print(data)
-
-    print(len(compressed))
-    # print(compressed)
-    with open('samples/lorem.txt.lzw', 'wb') as f:
-        f.write(compressed)
-
-    d = decompress(compressed)
-
-    print(len(d))
-    print(d)
-
-    print('Compression ratio %.2f%%' % ((1 - len(compressed) / len(data)) * 100))
-    print('Equal ?', d == data)
