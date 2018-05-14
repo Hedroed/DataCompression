@@ -11,7 +11,8 @@ def test_wikipedia_example():
     d = decompress(compressed)
 
     print("Compression from %d to %d bytes" % (len(data), len(compressed)))
-    print('Compression ratio %.2f%%' % ((1 - len(compressed) / len(data)) * 100))
+    print('Compression ratio %.2f%%' %
+          ((1 - len(compressed) / len(data)) * 100))
     print('Equal ?', d == data)
     assert d == data
 
@@ -24,7 +25,8 @@ def test_lorem_text():
     d = decompress(compressed)
 
     print("Compression from %d to %d bytes" % (len(data), len(compressed)))
-    print('Compression ratio %.2f%%' % ((1 - len(compressed) / len(data)) * 100))
+    print('Compression ratio %.2f%%' %
+          ((1 - len(compressed) / len(data)) * 100))
     print('Equal ?', d == data)
     assert d == data
 
@@ -40,7 +42,8 @@ def test_horla_text():
     d = decompress(compressed)
 
     print("Compression from %d to %d bytes" % (len(data), len(compressed)))
-    print('Compression ratio %.2f%%' % ((1 - len(compressed) / len(data)) * 100))
+    print('Compression ratio %.2f%%' %
+          ((1 - len(compressed) / len(data)) * 100))
     print('Equal ?', d == data)
     assert d == data
 
@@ -57,7 +60,8 @@ def test_multiple_char():
     print(d)
 
     print("Compression from %d to %d bytes" % (len(data), len(compressed)))
-    print('Compression ratio %.2f%%' % ((1 - len(compressed) / len(data)) * 100))
+    print('Compression ratio %.2f%%' %
+          ((1 - len(compressed) / len(data)) * 100))
     print('Equal ?', d == data)
     assert d == data
 
@@ -70,9 +74,27 @@ def test_french_text():
     d = decompress(compressed)
 
     print("Compression from %d to %d bytes" % (len(data), len(compressed)))
-    print('Compression ratio %.2f%%' % ((1 - len(compressed) / len(data)) * 100))
+    print('Compression ratio %.2f%%' %
+          ((1 - len(compressed) / len(data)) * 100))
     print('Equal ?', d == data)
     assert d == data
 
     with open('samples/french_text.txt.lzw', 'wb') as f:
+        f.write(compressed)
+
+
+def test_lenna_image():
+    with open('samples/lenna.png', 'rb') as f:
+        data = f.read()
+
+    compressed = compress(data)
+    d = decompress(compressed)
+
+    print("Compression from %d to %d bytes" % (len(data), len(compressed)))
+    print('Compression ratio %.2f%%' %
+          ((1 - len(compressed) / len(data)) * 100))
+    print('Equal ?', d == data)
+    assert d == data
+
+    with open('samples/lenna.png.lzw', 'wb') as f:
         f.write(compressed)

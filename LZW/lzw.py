@@ -6,12 +6,25 @@
 # By Mathieu LUX and Nathan RYDIN
 ####
 
+MAX_GROUP_LEN = (2 ** 13)
+# MAX_GROUP_LEN = (2 ** 10)
+
+
+def create_dictionnary():
+    groups = []  # Dictionnary
+    for i in range(256):
+        groups.append(i.to_bytes(1, 'big'))
+
+    groups.append(None)
+
+    return groups
+
 
 def compress(text: bytes):
 
-    groups = []  # Dictionnary
+    groups = create_dictionnary()
     length = 9
-    offset = pow(2, length-1)
+    offset = pow(2, length)
 
     ret = ''
 
@@ -28,10 +41,7 @@ def compress(text: bytes):
             current = text[i:i+1]
             i += 1
 
-        if len(w) == 1:
-            r = "{:b}".format(int.from_bytes(w, 'big')).rjust(length, '0')
-        else:
-            r = "{:b}".format(groups.index(w) + 256).rjust(length, '0')
+        r = "{:b}".format(groups.index(w)).rjust(length, '0')
 
         # print("\nw: %s , c: %s" % (w, current))
         # print('Add %s (%d) [%d]' % (r, int(r, 2), len(groups)))
@@ -39,16 +49,27 @@ def compress(text: bytes):
 
         if len(groups) >= offset:
             # print('Size up')
-            offset = pow(2, length)
             length += 1
+            offset = pow(2, length)
 
         if i < textLen:
             groups.append(w + current)
-        # print(groups)
+
+        if len(groups) > MAX_GROUP_LEN:
+            print(groups[-10:])
+            ret += "{:b}".format(256).rjust(length, '0')
+            # Clean up dictionnary
+            groups = create_dictionnary()
+            length = 9
+            offset = pow(2, length)
 
         w = current
 
     ret += '0' * (8 - len(ret) % 8)  # padding with 0
+
+    # print(groups)
+
+    # print('DEBUG: dic len %s' % len(groups))
 
     bitcode = [int(ret[i:i+8], 2) for i in range(0, len(ret), 8)]
     return bytes(bitcode)
@@ -59,9 +80,9 @@ def decompress(text: bytes):
     bitcode = ''.join("{:08b}".format(i) for i in text)
     # print(bitcode)
 
-    groups = []  # Dictionnary
+    groups = create_dictionnary()
     length = 9
-    offset = pow(2, length-1)
+    offset = pow(2, length)
 
     v = int(bitcode[0:length], 2)
     ret = v.to_bytes(1, 'big')
@@ -76,14 +97,30 @@ def decompress(text: bytes):
         v = int(bc, 2)  # current code
         i += length
 
-        # print("\nGet %s (%d) [%d]" % (bc, v, len(groups)))
+        if v == 256:
+            # print(groups)
+            # print("Clean up dictionnary")
 
-        if v < 256:
+            groups = create_dictionnary()
+            length = 9
+            offset = pow(2, length)
+
+            bc = bitcode[i:i+length]
+            v = int(bc, 2)  # current code
+            i += length
+
             r = v.to_bytes(1, 'big')
-        elif v - 256 >= len(groups):
+            ret += r
+            w = r
+
+            continue
+
+        if v >= len(groups):
             r = w + r[0:1]
         else:
-            r = groups[v - 256]
+            r = groups[v]
+
+        # print("\nGet %s (%d) [%d] : %s" % (bc, v, len(groups), r))
 
         ret += r
         groups.append(w + r[0:1])
@@ -91,8 +128,43 @@ def decompress(text: bytes):
 
         if len(groups) >= offset:
             # print('Size up')
-            offset = pow(2, length)
             length += 1
+            offset = pow(2, length)
 
         w = r
+
+    # print(groups)
+
     return ret
+
+
+if __name__ == '__main__':
+    import argparse
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-d',
+                        '--decode',
+                        action='store_true',
+                        help='Decode')
+
+    parser.add_argument('input',
+                        type=str,
+                        help='In file')
+
+    parser.add_argument('output',
+                        type=str,
+                        help='Out file')
+
+    args = parser.parse_args()
+
+    with open(args.input, 'rb') as f:
+        data = f.read()
+
+    if args.decode:
+        ret = decompress(data)
+    else:
+        ret = compress(data)
+
+    with open(args.output, 'wb') as f:
+        f.write(ret)
