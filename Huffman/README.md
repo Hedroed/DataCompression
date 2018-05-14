@@ -30,4 +30,4 @@ The command `pytest` will find the files begining with `test_` and test all meth
 
 ## Limitations
 
-The first 6 bytes of a compressed file contains the size of the the uncompressed data. So this implementation can not compress a file larger than 32 to.
+The first 6 bytes of a compressed file contains the size, in bytes, of the the uncompressed data. Due to this header, this implementation can not compress a file larger than 256 to.
