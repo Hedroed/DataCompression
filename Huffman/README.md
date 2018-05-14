@@ -27,3 +27,7 @@ pytest
 ```
 
 The command `pytest` will find the files begining with `test_` and test all methods, in those files, begining with `test_`.
+
+## Limitations
+
+The first 6 bytes of a compressed file contains the size of the the uncompressed data. So this implementation can not compress a file larger than 32 to.
