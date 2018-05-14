@@ -87,24 +87,25 @@ def generate_tree(content):
         (counts[c], Node(c))
         for c in counts
     ]
+    freq.sort(key=lambda x:x[1].letter)
     return tree_from_frequencies(freq)
 
 
 def tree_from_frequencies(frequencies):
-        heapify(frequencies)
-        while len(frequencies) > 1:
-            node1 = heappop(frequencies)
-            node2 = heappop(frequencies)
+    heapify(frequencies)
+    while len(frequencies) > 1:
+        node1 = heappop(frequencies)
+        node2 = heappop(frequencies)
 
-            parent = (node1[0] + node2[0], Node(None, left=node1[1], right=node2[1]))
+        parent = (node1[0] + node2[0], Node(None, left=node1[1], right=node2[1]))
 
-            heappush(frequencies, parent)
+        heappush(frequencies, parent)
 
-        if len(frequencies) == 1:
-            t = Tree(frequencies[0][1])
-            return t
-        else:
-            raise Exception()
+    if len(frequencies) == 1:
+        t = Tree(frequencies[0][1])
+        return t
+    else:
+        raise Exception()
 
 
 ###  Ex.2  construction du code d'Huffamn
@@ -149,16 +150,18 @@ def compress(content, tree=None):
         tree = generate_tree(content)
         code = huffman_code(tree)
 
+    # First 6 bytes = size of the uncompressed data
+    bits = bin(len(content))[2:].rjust(48, '0')
     # Convert content to bits using code
-    bits = ""
     for c in content:
         if c in code:
             bits += code[c]
         else:
-            bits += code[' ']
+            # If byte not found in code
+            bits += code[0]
 
     # Transform bit string to bytes
-    bytestring = bytes([int(bits[i:i+8], 2) for i in range(0, len(bits), 8)])
+    bytestring = bytes([int(bits[i:i+8].ljust(8, '0'), 2) for i in range(0, len(bits), 8)])
 
     return bytestring, tree
 
@@ -184,14 +187,22 @@ def decompress(tree, data):
     current_node = tree.root
     # Convert data to bits
     bits = ''.join(bin(c)[2:].rjust(8, '0') for c in data)
-    
-    for b in bits:
-        if b == "0":
+    # First 6 bytes = size of the uncompressed data
+    content_size = int(bits[:48], 2)
+    # Iter until we get all uncompress characters
+    i = 48
+    current_size = 0
+    while current_size < content_size:
+        if bits[i] == "0":
             current_node = current_node.left
         else:
             current_node = current_node.right
         if current_node.isLeaf():
+            current_size += 1
             content += current_node.letter
             current_node = tree.root
+        # print('%d / %d' % (current_size, content_size))
+        # print(i)
+        i += 1
     
     return content
