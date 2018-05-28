@@ -1,13 +1,16 @@
+"""
+LZW compression algorithm
+By Mathieu LUX and Nathan RYDIN
+"""
 #!/usr/bin/env python3
 # coding: utf-8
 
-####
-# LZW compression algorithm
-# By Mathieu LUX and Nathan RYDIN
-####
+from typing import Dict
 
+
+# MAX_GROUP_LEN = 256 * 256
 MAX_GROUP_LEN = (2 ** 13)
-# MAX_GROUP_LEN = (2 ** 10)
+# MAX_GROUP_LEN = (2 ** 11)
 
 
 def create_dictionnary():
@@ -20,7 +23,8 @@ def create_dictionnary():
     return groups
 
 
-def compress(text: bytes):
+def compress(text: bytes) -> bytes:
+    statsDebug: Dict[str, int] = {}
 
     groups = create_dictionnary()
     length = 9
@@ -47,6 +51,12 @@ def compress(text: bytes):
         # print('Add %s (%d) [%d]' % (r, int(r, 2), len(groups)))
         ret += r
 
+        k = "%d:%d" % (len(w*8), len(r))
+        if k in statsDebug:
+            statsDebug[k] += 1
+        else:
+            statsDebug[k] = 1
+
         if len(groups) >= offset:
             # print('Size up')
             length += 1
@@ -56,7 +66,7 @@ def compress(text: bytes):
             groups.append(w + current)
 
         if len(groups) > MAX_GROUP_LEN:
-            print(groups[-10:])
+            # print(groups[-10:])
             ret += "{:b}".format(256).rjust(length, '0')
             # Clean up dictionnary
             groups = create_dictionnary()
@@ -68,6 +78,7 @@ def compress(text: bytes):
     ret += '0' * (8 - len(ret) % 8)  # padding with 0
 
     # print(groups)
+    print(statsDebug)
 
     # print('DEBUG: dic len %s' % len(groups))
 
@@ -75,7 +86,7 @@ def compress(text: bytes):
     return bytes(bitcode)
 
 
-def decompress(text: bytes):
+def decompress(text: bytes) -> bytes:
 
     bitcode = ''.join("{:08b}".format(i) for i in text)
     # print(bitcode)
