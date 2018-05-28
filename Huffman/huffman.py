@@ -14,24 +14,40 @@ import unidecode
 # --- Model ---
 
 class Tree:
+    """Tree structure.
+
+    A tree is composed of a root (a node).
+    The root is a node, it can have a left children and a right children.
+
+    Args:
+        root (Node): the root ("top") of the tree
+    """
+
     def __init__(self, root=None):
         self.root = root
 
     def __str__(self):
-        if self.root == None:
+        if self.root is not None:
             return "Empty tree"
         else:
             return "Tree:\n" + self.root.print("", True)
 
 
-class Node :
+class Node:
+    """Node structure for Huffman tree.
+
+    A node can contains a letter, a left children and a right children.
+    """
     def __init__(self, letter, left=None, right=None):
-        self.left=left
-        self.right=right
-        self.letter=letter
+        self.left = left
+        self.right = right
+        self.letter = letter
 
     def isLeaf(self):
-        return self.left == None and self.right == None
+        """Is the node a leaf ?
+        A node is a leaf if it has not childrens.
+        """
+        return self.left is None and self.right is not None
 
     def __str__(self):
         if self.isLeaf():
@@ -40,24 +56,24 @@ class Node :
             return "\033[93mNode\033[0m"
 
     def __repr__(self):
-        return '<'+ str(self.letter)+'.'+str(self.left)+'.'+str(self.right)+'>'
+        return '<' + str(self.letter) + '.' + str(self.left) + '.' + str(self.right) + '>'
 
     def print(self, prefix, isTail=False):
+        """Recursively print the nodes, starting from this node."""
         ret = ""
-        ret += prefix + ( "└── " if isTail else "├── " ) + str(self) + "\n"
+        ret += prefix + ("└── " if isTail else "├── ") + str(self) + "\n"
         if not self.isLeaf():
             ret += self.left.print(prefix + ("    " if isTail else "│   "), False)
             ret += self.right.print(prefix + ("    " if isTail else "│   "), True)
         return ret
 
     def __lt__(self, other):
-        '''
-            Handle the case where 2 values are equals for heapify and heappush
-        '''
+        """Handle the case where 2 values are equals for heapify and heappush."""
         return True
 
 
-def get_french_frequencies() :
+def get_french_frequencies():
+    """Get french fequencies on [a-z ]."""
     caracteres = [
         ' ', 'a', 'b', 'c', 'd', 'e', 'f',
         'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -79,19 +95,36 @@ def get_french_frequencies() :
 
 # --- Core ---
 
-###  Ex.1  construction de l'arbre d'Huffamn utilisant la structure de "tas binaire"
+# I - Huffman tree genration using "binary heap" structure
 
 def generate_tree(content):
+    """Generate an Huffman tree from datas.
+    
+    Args:
+        content (str): the datas
+
+    Returns:
+        The Huffman tree.
+    """
     counts = Counter(content)
     freq = [
         (counts[c], Node(c))
         for c in counts
     ]
-    freq.sort(key=lambda x:x[1].letter)
+    freq.sort(key=lambda x: x[1].letter)
     return tree_from_frequencies(freq)
 
 
 def tree_from_frequencies(frequencies):
+    """Generate a tree from frequencies.
+
+    Args:
+        frequencies (list): A list of tuples (proba, Node(letter))
+
+    Returns:
+        The Huffman tree.
+    """
+    print(frequencies)
     heapify(frequencies)
     while len(frequencies) > 1:
         node1 = heappop(frequencies)
@@ -108,36 +141,64 @@ def tree_from_frequencies(frequencies):
         raise Exception()
 
 
-###  Ex.2  construction du code d'Huffamn
+# II - Huffman code construction
 
-def parcours(node, prefixe, code):
+def browse_tree(node, prefix, code):
+    """Browse the tree to make Huffman code.
+
+    Args:
+        node (Node): The parent node
+        prefix (str): Prefix from parent node
+        code (list): list containing the Huffman code
+    """
     if node.isLeaf():
-        code[node.letter] = prefixe
+        code[node.letter] = prefix
         return
-    
-    parcours(node.left, prefixe + '0', code)
-    parcours(node.right, prefixe + '1', code)
+
+    browse_tree(node.left, prefix + '0', code)
+    browse_tree(node.right, prefix + '1', code)
 
 
 def huffman_code(tree):
-    # on remplit le dictionnaire du code d'Huffman en parcourant l'arbre
+    """Fill the dictionary with the Huffman code by browsing the tree.
+    
+    Args:
+        tree (Tree): the tree used to generate Huffman code
+
+    Returns:
+        The Huffman code.
+    """
     code = {}
-    parcours(tree.root,'',code)
+    browse_tree(tree.root, '', code)
     return code
 
 
-###  Ex.3  encodage d'un texte contenu dans un fichier
+# III - Data compression
 
 def compress_file(in_file, out_file=None, tree=None):
+    """Compress a file.
+
+    If out_file is not None, the compressed data will be stored in a file.
+    If tree is None, a tree will be automatically generated according to
+    the content of in_file.
+
+    Args:
+        in_file (str): path to the file to compress
+        out_file (str): path to the output file
+        tree (Tree): The Huffman tree
+
+    Returns:
+        The compressed datas.
+    """
     # Get content from input file
     with open(in_file) as f:
         content = f.read()
-    
+
     # Compress file content
     bytestring, tree = compress(content, tree)
 
     # Write bytes to the output file
-    if out_file != None:
+    if out_file is not None:
         with open(out_file, 'wb') as o:
             o.write(bytestring)
 
@@ -145,6 +206,18 @@ def compress_file(in_file, out_file=None, tree=None):
 
 
 def compress(content, tree=None):
+    """Compress datas.
+
+    If tree is None, a tree will be automatically generated according to
+    the content of in_file.
+
+    Args:
+        content (str): The datas to compress
+        tree (Tree): The Huffman tree
+
+    Returns:
+        The compressed datas.
+    """
     if tree is None:
         # Generate code from input file
         tree = generate_tree(content)
@@ -166,23 +239,42 @@ def compress(content, tree=None):
     return bytestring, tree
 
 
-###  Ex.4  décodage d'un fichier compresse
+# IV - b. Data decompression
 
 def decompress_file(tree, compressed_file, out_file=None):
+    """Decompress datas from a file.
+
+    Args:
+        tree (Tree): the tree used to compress the file
+        compressed_file (str): path to the compressed file
+        out_file (str): path to the output file
+
+    Returns:
+        The decompressed datas.
+    """
     with open(compressed_file, 'rb') as f:
         data = f.read()
-    
+
     content = decompress(tree, data)
 
     # Write content to the output file
-    if out_file != None:
+    if out_file is not None:
         with open(out_file, 'w') as o:
             o.write(content)
     else:
         return content
 
-    
+
 def decompress(tree, data):
+    """Decompress datas
+
+    Args:
+        tree (Tree): the tree used to compress
+        data (str): the compressed datas
+
+    Returns:
+        The decompressed datas.
+    """
     content = ""
     current_node = tree.root
     # Convert data to bits
@@ -201,8 +293,6 @@ def decompress(tree, data):
             current_size += 1
             content += current_node.letter
             current_node = tree.root
-        # print('%d / %d' % (current_size, content_size))
-        # print(i)
         i += 1
-    
+
     return content
