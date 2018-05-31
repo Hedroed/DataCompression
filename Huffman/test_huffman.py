@@ -9,7 +9,7 @@ def average(tree):
     code = huffman_code(tree)
 
     avg = 0
-    for i,e in enumerate(code):
+    for i, e in enumerate(code):
         avg += len(code[e][1]) * proba[i]
 
     return avg/len(code) * 100
@@ -21,7 +21,7 @@ def compression_ratio(uncompressed, compressed):
 
 def test_compress_decompress_horla():
 
-    ## Unit test
+    # Unit test
     with open("samples/horla.txt") as f:
         original_data = f.read()
 
@@ -33,7 +33,7 @@ def test_compress_decompress_horla():
 
     assert original_data == decompress_data
 
-    ## Additional infos (pytest -s)
+    # Additional infos (pytest -s)
     print('\n[i] Compression of samples/horla.txt')
     print("->  File size: %d Bytes" % len(original_data.encode()))
     print("->  Compress time: %.4fs" % (t2 - t1))
@@ -43,7 +43,7 @@ def test_compress_decompress_horla():
 
 def test_compress_decompress_french_text():
 
-    ## Unit test
+    # Unit test
     with open("samples/french_text.txt") as f:
         original_data = f.read()
 
@@ -55,7 +55,7 @@ def test_compress_decompress_french_text():
 
     assert original_data == decompress_data
 
-    ## Additional infos (pytest -s)
+    # Additional infos (pytest -s)
     print('\n[i] Compression of samples/french_text.txt')
     print("->  File size: %d KB" % (len(original_data.encode()) / 1024))
     print("->  Compress time: %.4fs" % (t2 - t1))
@@ -65,7 +65,7 @@ def test_compress_decompress_french_text():
 
 def test_compress_decompress_message():
 
-    ## Unit test
+    # Unit test
     with open("samples/message.txt") as f:
         original_data = f.read()
 
@@ -77,7 +77,7 @@ def test_compress_decompress_message():
 
     assert original_data == decompress_data
 
-    ## Additional infos (pytest -s)
+    # Additional infos (pytest -s)
     print('\n[i] Compression of samples/message.txt')
     print("->  File size: %d Bytes" % len(original_data.encode()))
     print("->  Compress time: %.4fs" % (t2 - t1))
