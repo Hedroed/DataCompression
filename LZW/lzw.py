@@ -47,15 +47,13 @@ def compress(text: bytes) -> bytes:
 
         r = "{:b}".format(groups.index(w)).rjust(length, '0')
 
-        # print("\nw: %s , c: %s" % (w, current))
-        # print('Add %s (%d) [%d]' % (r, int(r, 2), len(groups)))
         ret += r
 
-        k = "%d:%d" % (len(w*8), len(r))
-        if k in statsDebug:
-            statsDebug[k] += 1
-        else:
-            statsDebug[k] = 1
+        # k = "%d:%d" % (len(w*8), len(r))
+        # if k in statsDebug:
+        #     statsDebug[k] += 1
+        # else:
+        #     statsDebug[k] = 1
 
         if len(groups) >= offset:
             # print('Size up')
@@ -66,7 +64,6 @@ def compress(text: bytes) -> bytes:
             groups.append(w + current)
 
         if len(groups) > MAX_GROUP_LEN:
-            # print(groups[-10:])
             ret += "{:b}".format(256).rjust(length, '0')
             # Clean up dictionnary
             groups = create_dictionnary()
@@ -76,11 +73,7 @@ def compress(text: bytes) -> bytes:
         w = current
 
     ret += '0' * (8 - len(ret) % 8)  # padding with 0
-
-    # print(groups)
-    print(statsDebug)
-
-    # print('DEBUG: dic len %s' % len(groups))
+    # print(statsDebug)
 
     bitcode = [int(ret[i:i+8], 2) for i in range(0, len(ret), 8)]
     return bytes(bitcode)
@@ -89,7 +82,6 @@ def compress(text: bytes) -> bytes:
 def decompress(text: bytes) -> bytes:
 
     bitcode = ''.join("{:08b}".format(i) for i in text)
-    # print(bitcode)
 
     groups = create_dictionnary()
     length = 9
@@ -109,8 +101,6 @@ def decompress(text: bytes) -> bytes:
         i += length
 
         if v == 256:
-            # print(groups)
-            # print("Clean up dictionnary")
 
             groups = create_dictionnary()
             length = 9
@@ -131,20 +121,14 @@ def decompress(text: bytes) -> bytes:
         else:
             r = groups[v]
 
-        # print("\nGet %s (%d) [%d] : %s" % (bc, v, len(groups), r))
-
         ret += r
         groups.append(w + r[0:1])
-        # print(groups)
 
         if len(groups) >= offset:
-            # print('Size up')
             length += 1
             offset = pow(2, length)
 
         w = r
-
-    # print(groups)
 
     return ret
 
