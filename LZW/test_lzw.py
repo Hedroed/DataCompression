@@ -32,22 +32,22 @@ def test_wikipedia_example():
     printResults(data, len(data), len(compressed), t1 - t0, t2 - t1)
 
 
-def test_lorem_text():
-    t0 = time.time()
-    with open('samples/lorem.txt', 'rb') as f:
-        data = f.read()
+# def test_lorem_text():
+#     t0 = time.time()
+#     with open('samples/lorem.txt', 'rb') as f:
+#         data = f.read()
 
-    compressed = compress(data)
-    t1 = time.time()
-    d = decompress(compressed)
-    t2 = time.time()
+#     compressed = compress(data)
+#     t1 = time.time()
+#     d = decompress(compressed)
+#     t2 = time.time()
 
-    assert d == data
-    printResults('samples/lorem.txt', len(data),
-                 len(compressed), t1 - t0, t2 - t1)
+#     assert d == data
+#     printResults('samples/lorem.txt', len(data),
+#                  len(compressed), t1 - t0, t2 - t1)
 
-    with open('samples/lorem.txt.lzw', 'wb') as f:
-        f.write(compressed)
+#     with open('samples/lorem.txt.lzw', 'wb') as f:
+#         f.write(compressed)
 
 
 def test_horla_text():
@@ -68,17 +68,17 @@ def test_horla_text():
         f.write(compressed)
 
 
-def test_multiple_char():
-    t0 = time.time()
-    data = 'T      ML'.encode()
+# def test_multiple_char():
+#     t0 = time.time()
+#     data = 'T      ML'.encode()
 
-    compressed = compress(data)
-    t1 = time.time()
-    d = decompress(compressed)
-    t2 = time.time()
+#     compressed = compress(data)
+#     t1 = time.time()
+#     d = decompress(compressed)
+#     t2 = time.time()
 
-    assert d == data
-    printResults(data, len(data), len(compressed), t1 - t0, t2 - t1)
+#     assert d == data
+#     printResults(data, len(data), len(compressed), t1 - t0, t2 - t1)
 
 
 def test_french_text():

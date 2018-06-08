@@ -24,7 +24,7 @@ def create_dictionnary():
 
 
 def compress(text: bytes) -> bytes:
-    statsDebug: Dict[str, int] = {}
+    # statsDebug: Dict[str, int] = {}
 
     groups = create_dictionnary()
     length = 9
@@ -73,7 +73,13 @@ def compress(text: bytes) -> bytes:
         w = current
 
     ret += '0' * (8 - len(ret) % 8)  # padding with 0
-    # print(statsDebug)
+
+
+# print(groups)
+# print(statsDebug)
+
+# print('DEBUG: dic len %s' % len(groups))
+# print(statsDebug)
 
     bitcode = [int(ret[i:i+8], 2) for i in range(0, len(ret), 8)]
     return bytes(bitcode)
