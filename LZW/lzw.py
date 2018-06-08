@@ -24,7 +24,7 @@ def create_dictionnary():
 
 
 def compress(text: bytes) -> bytes:
-    statsDebug: Dict[str, int] = {}
+    # statsDebug: Dict[str, int] = {}
 
     groups = create_dictionnary()
     length = 9
@@ -52,10 +52,10 @@ def compress(text: bytes) -> bytes:
         ret += r
 
         k = "%d:%d" % (len(w*8), len(r))
-        if k in statsDebug:
-            statsDebug[k] += 1
-        else:
-            statsDebug[k] = 1
+        # if k in statsDebug:
+        #     statsDebug[k] += 1
+        # else:
+        #     statsDebug[k] = 1
 
         if len(groups) >= offset:
             # print('Size up')
@@ -78,7 +78,7 @@ def compress(text: bytes) -> bytes:
     ret += '0' * (8 - len(ret) % 8)  # padding with 0
 
     # print(groups)
-    print(statsDebug)
+    # print(statsDebug)
 
     # print('DEBUG: dic len %s' % len(groups))
 
