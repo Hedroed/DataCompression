@@ -124,7 +124,6 @@ def tree_from_frequencies(frequencies):
     Returns:
         The Huffman tree.
     """
-    print(frequencies)
     heapify(frequencies)
     while len(frequencies) > 1:
         node1 = heappop(frequencies)
