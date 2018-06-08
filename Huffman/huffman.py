@@ -47,7 +47,7 @@ class Node:
         """Is the node a leaf ?
         A node is a leaf if it has not childrens.
         """
-        return self.left is None and self.right is not None
+        return self.left is None and self.right is None
 
     def __str__(self):
         if self.isLeaf():
