@@ -1,2 +1,1 @@
-unidecode==1.0.22
 pytest==3.5.1
