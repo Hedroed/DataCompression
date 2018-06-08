@@ -26,6 +26,12 @@ pip3 install -r requirements.txt
 pytest
 ```
 
+Start the tests with addtionals infos in output :
+
+```bash
+pytest -s
+```
+
 The command `pytest` will find the files begining with `test_` and test all methods, in those files, begining with `test_`.
 
 ## Limitations
